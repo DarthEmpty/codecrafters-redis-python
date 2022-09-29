@@ -5,9 +5,11 @@ def client_loop(connection):
     print("thread spawned")
 
     while True:
-        connection.recv(1024) # wait for client to send data
-        connection.send(b"+PONG\r\n")
-
+        try:
+            connection.recv(1024) # wait for client to send data
+            connection.send(b"+PONG\r\n")
+        except ConnectionError:
+            break
 
 
 def main():
