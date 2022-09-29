@@ -2,6 +2,8 @@ import socket
 import threading
 
 def client_loop(connection):
+    print("thread spawned")
+
     while True:
         connection.recv(1024) # wait for client to send data
         connection.send(b"+PONG\r\n")
@@ -17,6 +19,8 @@ def main():
 
     while True:
         client_connection, _ = server_socket.accept() # wait for client
+        print("client found")
+
         threading.Thread(target=client_loop, args=(client_connection,))
 
 
