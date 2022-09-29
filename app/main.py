@@ -16,12 +16,13 @@ def main():
     # Uncomment this to pass the first stage
     #
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+    client_threads = []
 
     while True:
         client_connection, _ = server_socket.accept() # wait for client
         print("client found")
 
-        threading.Thread(target=client_loop, args=(client_connection,))
+        client_threads.append(threading.Thread(target=client_loop, args=(client_connection,)))
 
 
 
