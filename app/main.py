@@ -13,7 +13,7 @@ def client_loop(connection):
         try:
             resp = reader.read() # wait for client to send data
             print(resp)
-            command, *args = decode(resp)
+            command = decode(resp)
 
             if command == b"PING":
                 connection.send(b"+PONG\r\n")
