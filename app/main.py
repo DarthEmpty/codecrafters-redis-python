@@ -26,8 +26,8 @@ def client_loop(connection):
 
     while True:
         try:
-            connection.recv(BUFFER_SIZE) # wait for client to send data
-            command, *args = RESPDecoder(connection.read(BUFFER_SIZE))
+            resp = connection.recv(BUFFER_SIZE) # wait for client to send data
+            command, *args = RESPDecoder(resp)
 
             if command == b"PING":
                 connection.send(b"+PONG\r\n")
