@@ -23,11 +23,12 @@ class RESPEncoder:
 def client_loop(connection):
     print("thread spawned")
     BUFFER_SIZE = 1024
+    decode = RESPDecoder()
 
     while True:
         try:
             resp = connection.recv(BUFFER_SIZE) # wait for client to send data
-            command, *args = RESPDecoder(resp)
+            command, *args = decode(resp)
 
             if command == b"PING":
                 connection.send(b"+PONG\r\n")
