@@ -1,13 +1,22 @@
 import socket
 import threading
+from typing import Collection
+from resp_handler import RESPDecoder
 
 def client_loop(connection):
     print("thread spawned")
+    BUFFER_SIZE = 1024
 
     while True:
         try:
-            connection.recv(1024) # wait for client to send data
-            connection.send(b"+PONG\r\n")
+            connection.recv(BUFFER_SIZE) # wait for client to send data
+            command, *args = RESPDecoder(connection.read(BUFFER_SIZE))
+
+            if command == b"PING":
+                connection.send(b"+PONG\r\n")
+            else:
+                connection.send(b"-ERR unknown command\r\n")
+
         except ConnectionError:
             break
 
@@ -15,8 +24,6 @@ def client_loop(connection):
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
 
-    # Uncomment this to pass the first stage
-    #
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
 
     while True:
