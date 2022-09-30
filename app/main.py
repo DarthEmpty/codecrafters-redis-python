@@ -12,6 +12,7 @@ def client_loop(connection):
     while True:
         try:
             resp = reader.read() # wait for client to send data
+            print(resp)
             command, *args = decode(resp)
 
             if command == b"PING":
