@@ -13,7 +13,7 @@ class RESPDecoder(Callable):
             raise Exception(f"Unknown data type byte: {resp[0]}")
     
     def _simple_string(resp: bytes):
-        return resp[1:].strip()
+        return (resp[1:].strip(), )
 
 
 class RESPEncoder:
