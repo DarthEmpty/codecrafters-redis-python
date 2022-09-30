@@ -1,7 +1,8 @@
 import socket
 import threading
+from typing import Callable
 
-class RESPDecoder:
+class RESPDecoder(Callable):
     def __call__(self, resp: bytes):
         if resp.startswith(b"+"):
             return self._simple_string(resp)
