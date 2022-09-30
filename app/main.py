@@ -1,6 +1,5 @@
 import socket
 import threading
-from typing import Collection
 from resp_handler import RESPDecoder
 
 def client_loop(connection):
