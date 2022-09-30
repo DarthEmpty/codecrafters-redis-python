@@ -1,34 +1,17 @@
+from asyncore import read
 import socket
 import threading
-from typing import Callable
-
-class RESPDecoder(Callable):
-    def __call__(self, resp: bytes):
-        if resp.startswith(b"+"):
-            return self._simple_string(resp)
-        
-        elif resp.startswith(b"*"):
-            pass
-        
-        else:
-            raise Exception(f"Unknown data type byte: {resp[0]}")
-    
-    def _simple_string(resp: bytes):
-        return resp[1:].strip()
-
-
-class RESPEncoder:
-    pass
+from app.resp_handlers import BufferedReader, RESPDecoder
 
 
 def client_loop(connection):
     print("thread spawned")
-    BUFFER_SIZE = 1024
+    reader = BufferedReader(connection)
     decode = RESPDecoder()
 
     while True:
         try:
-            resp = connection.recv(BUFFER_SIZE) # wait for client to send data
+            resp = reader.read() # wait for client to send data
             command, *args = decode(resp)
 
             if command == b"PING":
