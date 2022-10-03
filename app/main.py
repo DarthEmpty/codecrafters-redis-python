@@ -21,8 +21,6 @@ def client_loop(connection):
 
 
 def main():
-    # You can use print statements as follows for debugging, they'll be visible when running tests.
-
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
 
     while True:

@@ -25,8 +25,6 @@ class RESPStreamDecoder:
 
     def _bulk_string(self):
         size = int(self.reader.read_until_delimiter())
-        
-        print(size)
 
         if size == -1:
             return None
@@ -35,14 +33,12 @@ class RESPStreamDecoder:
             data = self.reader.read(size)
 
             # Ensure that delimiter is immediately after the string
-            assert self.reader.read_until_delimiter() == b"" 
+            # assert self.reader.read_until_delimiter() == b"" 
             return data
 
     def _array(self):
         size = int(self.reader.read_until_delimiter())        
         data = []
-
-        print(size)
 
         for _ in range(size):
             data.append(self.decode())
@@ -67,8 +63,6 @@ class RESPStreamReader:
         if (remainder := max_bytes - len(data)) > 0:
             data += self.connection.recv(remainder)
 
-        print(f"read: {data}")
-        print(f"buffer: {self.buffer}")
         return data
     
     def read_until_delimiter(self, delimiter=b"\r\n"):
@@ -78,6 +72,4 @@ class RESPStreamReader:
         
         data, self.buffer = temp_buf.split(delimiter, maxsplit=1)
 
-        print(f"read_until: {data}")
-        print(f"buffer: {self.buffer}")
         return data  # Excludes delim from return value
