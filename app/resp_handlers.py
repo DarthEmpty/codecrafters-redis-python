@@ -3,7 +3,7 @@ from typing import Callable
 
 class RESPStreamDecoder(Callable):
     def __init__(self, connection):
-        super().__init__()
+        super()
         self.reader = RESPStreamReader(connection)
 
     def decode(self):
