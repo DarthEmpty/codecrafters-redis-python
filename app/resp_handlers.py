@@ -26,7 +26,7 @@ class RESPStreamDecoder:
 
         size = int(self.reader.read_until_delimiter())
         print(size)
-        
+
         if size == -1:
             return None
         
@@ -71,6 +71,6 @@ class RESPStreamReader:
         while delimiter not in temp_buf:
             temp_buf += self.read()
         
-        data, self.buffer = temp_buf.split(delimiter, maxsplit=1)
+        data, _, self.buffer = temp_buf.partition(delimiter)
 
         return data  # Excludes delim from return value
