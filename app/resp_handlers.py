@@ -77,6 +77,7 @@ class RESPStreamReader:
         temp_buf = b""
         while delimiter not in temp_buf:
             temp_buf += self.read()
+            print(temp_buf)
         
         data, self.buffer = temp_buf.split(delimiter, maxsplit=1)
 
