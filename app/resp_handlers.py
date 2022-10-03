@@ -42,6 +42,8 @@ class RESPStreamDecoder:
         size = int(self.reader.read_until_delimiter())        
         data = []
 
+        print(size)
+
         for _ in range(size):
             data.append(self.decode())
         
