@@ -26,8 +26,6 @@ class RESPStreamDecoder:
     def _bulk_string(self):
         size = self.reader.read_until_delimiter()
         size = int(size)
-        
-        print(size)
 
         if size == -1:
             return None
