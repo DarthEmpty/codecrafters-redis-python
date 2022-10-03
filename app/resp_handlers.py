@@ -46,7 +46,7 @@ class RESPStreamDecoder:
 
 
 class RESPStreamReader:
-    DEFAULT_MAX_BYTES = 16
+    DEFAULT_MAX_BYTES = 8
 
     def __init__(self, connection):
         self.connection = connection
