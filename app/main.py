@@ -1,21 +1,16 @@
 from asyncore import read
 import socket
 import threading
-from app.resp_handlers import BufferedReader, RESPDecoder
+from app.resp_handlers import RESPStreamReader, RESPStreamDecoder
 
 
 def client_loop(connection):
     print("thread spawned")
-    reader = BufferedReader(connection)
-    decode = RESPDecoder()
-
     while True:
         try:
-            resp = reader.read() # wait for client to send data
-            print(resp)
-            command = decode(resp)
+            command, *args = RESPStreamDecoder(connection).decode()
 
-            if command == b"PING":
+            if command == b"ping":
                 connection.send(b"+PONG\r\n")
             else:
                 connection.send(b"-ERR unknown command\r\n")

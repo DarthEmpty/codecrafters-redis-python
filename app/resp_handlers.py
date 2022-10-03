@@ -1,32 +1,80 @@
 from typing import Callable
 
 
-class RESPDecoder(Callable):
-    def __call__(self, resp: bytes):
-        if resp.startswith(b"+"):
-            return self._simple_string(resp)
-        
-        elif resp.startswith(b"*"):
-            pass
+class RESPStreamDecoder(Callable):
+    def __init__(self, connection):
+        super().__init__()
+        self.reader = RESPStreamReader(connection)
+
+    def decode(self):
+        resp_type = self.reader.read(1)
+
+        if resp_type == b"+":
+            return self._simple_string()
+
+        elif resp_type == b"$":
+            return self._bulk_string()
+
+        elif resp_type == b"*":
+            return self._array()
         
         else:
-            raise Exception(f"Unknown data type byte: {resp[0]}")
+            raise Exception(f"Unknown data type byte: {resp_type}")
     
-    def _simple_string(resp: bytes):
-        return (resp[1:].strip(), )
+    def _simple_string(self):
+        return self.reader.read_until_delimiter()
+
+    def _bulk_string(self):
+        size = int(self.reader.read_until_delimiter())
+        
+        if size == -1:
+            return None
+        
+        else:
+            data = self.reader.read(size)
+
+            # Ensure that delimiter is immediately after the string
+            assert self.reader.read_until_delimiter() == b"" 
+            return data
+
+    def _array(self):
+        size = int(self.reader.read_until_delimiter())        
+        data = []
+
+        for _ in range(size):
+            data.append(self.decode())
+        
+        return data
 
 
-class RESPEncoder:
+class RESPStreamEncoder:
     pass
 
 
-class BufferedReader:
-    DEFAULT_BUFFER_SIZE = 1024
+class RESPStreamReader:
+    DEFAULT_MAX_BYTES = 1024
 
     def __init__(self, connection):
         self.connection = connection
+        self.buffer = b""
     
-    def read(self, buf_size=DEFAULT_BUFFER_SIZE):
-        data = self.connection.recv(buf_size)
+    def read(self, max_bytes=DEFAULT_MAX_BYTES):
+        # Prioritise reading from the buffer in case
+        # there's data left over from read_until
+        data = self.buffer[:max_bytes]
+        self.buffer = self.buffer[max_bytes:]
 
-        return None if not data else bytes(data)
+        # Read the remainder from the stream
+        if (remainder := max_bytes - len(data)) > 0:
+            data += self.connection.recv(remainder)
+
+        return data
+    
+    def read_until_delimiter(self, delimiter="\r\n"):
+        temp_buf = b""
+        while delimiter not in temp_buf:
+            temp_buf += self.read()
+        
+        data, self.buffer = temp_buf.split(delimiter, maxsplit=1)
+
+        return data  # Excludes delim from return value
