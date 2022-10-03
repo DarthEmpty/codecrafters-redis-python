@@ -1,7 +1,7 @@
 from asyncore import read
 import socket
 import threading
-from app.resp_handlers import RESPStreamReader, RESPStreamDecoder
+from app.resp_handlers import RESPStreamDecoder
 
 
 def client_loop(connection):
