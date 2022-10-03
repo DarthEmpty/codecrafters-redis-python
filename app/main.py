@@ -9,9 +9,10 @@ def client_loop(connection):
         try:
             command, *args = RESPStreamDecoder(connection).decode()
 
-            print(command)
             if command == b"ping":
                 connection.send(b"+PONG\r\n")
+            if command == b"echo":
+                connection.send(args[0])
             else:
                 connection.send(b"-ERR unknown command\r\n")
 
