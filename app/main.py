@@ -5,7 +5,6 @@ from app.resp_handlers import RESPStreamDecoder
 
 
 def client_loop(connection):
-    print("thread spawned")
     while True:
         try:
             command, *args = RESPStreamDecoder(connection).decode()

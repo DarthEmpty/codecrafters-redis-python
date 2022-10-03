@@ -6,8 +6,6 @@ class RESPStreamDecoder:
     def decode(self):
         resp_type = self.reader.read(1)
 
-        print(resp_type)
-
         if resp_type == b"+":
             return self._simple_string()
 
