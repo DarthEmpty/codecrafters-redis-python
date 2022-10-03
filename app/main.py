@@ -5,20 +5,21 @@ from app.resp_handlers import RESPStreamDecoder
 
 
 def client_loop(connection):
-    try:
-        command, *args = RESPStreamDecoder(connection).decode()
+    while True:
+        try:
+            command, *args = RESPStreamDecoder(connection).decode()
 
-        print(command, *args)
+            print(command, *args)
 
-        if command == b"ping":
-            connection.send(b"+PONG\r\n")
-        elif command == b"echo":
-            connection.send(args[0])
-        else:
-            connection.send(b"-ERR unknown command\r\n")
+            if command == b"ping":
+                connection.send(b"+PONG\r\n")
+            elif command == b"echo":
+                connection.send(args[0])
+            else:
+                connection.send(b"-ERR unknown command\r\n")
 
-    except ConnectionError:
-        return
+        except ConnectionError:
+            break
 
 
 def main():
