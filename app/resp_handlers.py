@@ -71,14 +71,15 @@ class RESPStreamReader:
         if (remainder := max_bytes - len(data)) > 0:
             data += self.connection.recv(remainder)
 
+        print(f"read: {data}")
         return data
     
     def read_until_delimiter(self, delimiter=b"\r\n"):
         temp_buf = b""
         while delimiter not in temp_buf:
             temp_buf += self.read()
-            print(temp_buf)
         
         data, self.buffer = temp_buf.split(delimiter, maxsplit=1)
 
+        print(f"read_until: {data}")
         return data  # Excludes delim from return value
