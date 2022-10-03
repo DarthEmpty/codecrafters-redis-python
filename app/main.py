@@ -26,8 +26,6 @@ def main():
 
     while True:
         client_connection, _ = server_socket.accept() # wait for client
-        print("client found")
-
         threading.Thread(target=client_loop, args=(client_connection,)).start()
 
 
