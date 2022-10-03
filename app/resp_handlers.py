@@ -64,7 +64,6 @@ class RESPStreamReader:
 
         print(f"Read: {data}")
         print(f"Buffer: {self.buffer}")
-        print()
 
         return data
     
@@ -77,6 +76,5 @@ class RESPStreamReader:
 
         print(f"Read_Until: {data}")
         print(f"Buffer: {self.buffer}")
-        print()
 
         return data  # Excludes delim from return value
