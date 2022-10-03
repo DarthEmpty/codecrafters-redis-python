@@ -67,7 +67,7 @@ class RESPStreamReader:
 
         return data
     
-    def read_until_delimiter(self, delimiter="\r\n"):
+    def read_until_delimiter(self, delimiter=b"\r\n"):
         temp_buf = b""
         while delimiter not in temp_buf:
             temp_buf += self.read()
