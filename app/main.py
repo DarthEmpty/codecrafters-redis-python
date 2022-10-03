@@ -10,6 +10,7 @@ def client_loop(connection):
         try:
             command, *args = RESPStreamDecoder(connection).decode()
 
+            print(command)
             if command == b"ping":
                 connection.send(b"+PONG\r\n")
             else:
