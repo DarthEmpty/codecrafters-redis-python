@@ -1,7 +1,4 @@
-from typing import Callable
-
-
-class RESPStreamDecoder(Callable):
+class RESPStreamDecoder:
     def __init__(self, connection):
         super()
         self.reader = RESPStreamReader(connection)
