@@ -23,6 +23,7 @@ class RESPStreamDecoder:
 
     def _bulk_string(self):
         # TODO: figure out why this method hangs
+        print("BULK: entered")
 
         size = int(self.reader.read_until_delimiter())
         print(size)
