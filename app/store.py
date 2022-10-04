@@ -9,9 +9,13 @@ class Store:
             return None
 
         value, expiry_time = self.contents[key]
+        now = time_ns()
 
-        if expiry_time and expiry_time <= time_ns():
+        if expiry_time and expiry_time <= now:
             return None
+
+        print(expiry_time)
+        print(now)
 
         return value
     
