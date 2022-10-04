@@ -21,7 +21,7 @@ def client_loop(connection: socket.socket, store: Store):
                 connection.send(encoder.to_bulk_string(args[0]))
 
             elif command == b"set":
-                if b"PX" in args:
+                if b"px" in args:
                     store.set(args[0], args[1], args[3])
                 else:
                     store.set(args[0], args[1])
