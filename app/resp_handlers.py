@@ -31,7 +31,7 @@ class RESPStreamDecoder:
             data = self.reader.read(size)
 
             # Ensure that delimiter is immediately after the string
-            assert self.reader.read_until_delimiter() == b"" 
+            assert self.reader.read_until_delimiter() == b""
             return data
 
     def _array(self):

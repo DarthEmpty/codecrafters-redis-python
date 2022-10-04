@@ -14,7 +14,7 @@ def client_loop(connection):
             if command == b"ping":
                 connection.send(b"+PONG\r\n")
             elif command == b"echo":
-                connection.send(args[0])
+                connection.send(f"${len(args[0])}\r\n{args[0]}\r\n".encode())
             else:
                 connection.send(b"-ERR unknown command\r\n")
 
