@@ -22,7 +22,6 @@ class RESPStreamDecoder:
         return self.reader.read_until_delimiter()
 
     def _bulk_string(self):
-        # TODO: figure out why this method hangs
         size = int(self.reader.read_until_delimiter())
 
         if size == -1:
@@ -32,7 +31,7 @@ class RESPStreamDecoder:
             data = self.reader.read(size)
 
             # Ensure that delimiter is immediately after the string
-            # assert self.reader.read_until_delimiter() == b"" 
+            assert self.reader.read_until_delimiter() == b"" 
             return data
 
     def _array(self):
