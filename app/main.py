@@ -22,7 +22,7 @@ def client_loop(connection: socket.socket, store: Store):
 
             elif command == b"set":
                 if b"px" in args:
-                    store.set(args[0], args[1], args[3])
+                    store.set(args[0], args[1], int(args[3]))
                 else:
                     store.set(args[0], args[1])
 
