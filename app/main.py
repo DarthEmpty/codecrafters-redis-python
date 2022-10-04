@@ -12,8 +12,6 @@ def client_loop(connection: socket.socket, store: Store):
         try:
             command, *args = decoder.decode()
 
-            print(command, *args)
-
             if command == b"ping":
                 connection.send(encoder.to_simple_string(b"PONG"))
 
