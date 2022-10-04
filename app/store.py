@@ -10,7 +10,7 @@ class Store:
 
         value, expiry_time = self.contents[key]
 
-        if expiry_time and expiry_time > time_ns():
+        if expiry_time and expiry_time < time_ns():
             return None
 
         return value

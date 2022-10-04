@@ -80,6 +80,6 @@ class RESPEncoder:
     
     def to_bulk_string(self, message: bytes):
         if message is None:
-            return b"-1\r\n"
+            return b"$-1\r\n"
 
         return b"$%d\r\n%b\r\n" % (len(message), message)
