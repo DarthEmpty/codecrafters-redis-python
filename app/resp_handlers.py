@@ -68,6 +68,6 @@ class RESPStreamReader:
         while delimiter not in self.buffer:
             self._load_to_buffer()
         
-        data, self.buffer = data.split(delimiter, maxsplit=1)
+        data, self.buffer = self.buffer.split(delimiter, maxsplit=1)
 
         return data
