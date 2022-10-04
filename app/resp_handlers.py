@@ -55,8 +55,11 @@ class RESPStreamReader:
     def read(self, max_bytes=DEFAULT_MAX_BYTES):
         # Prioritise reading from the buffer in case
         # there's data left over from read_until
-        data = self.buffer[:max_bytes]
-        self.buffer = self.buffer[max_bytes:]
+        data = b""
+
+        if self.buffer:
+            data = self.buffer[:max_bytes]
+            self.buffer = self.buffer[max_bytes:]
 
         # Read the remainder from the stream
         if (remainder := max_bytes - len(data)) > 0:
@@ -65,10 +68,10 @@ class RESPStreamReader:
         return data
     
     def read_until_delimiter(self, delimiter=b"\r\n"):
-        temp_buf = b""
-        while delimiter not in temp_buf:
-            temp_buf += self.read()
+        data = b""
+        while delimiter not in data:
+            data += self.read()
         
-        data, _, self.buffer = temp_buf.partition(delimiter)
+        data, self.buffer = data.split(delimiter, maxsplit=1)
 
         return data  # Excludes delim from return value
