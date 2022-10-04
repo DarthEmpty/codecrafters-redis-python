@@ -1,22 +1,35 @@
-from asyncore import read
 import socket
 import threading
-from app.resp_handlers import RESPStreamDecoder
+from app.resp_handlers import RESPStreamDecoder, RESPEncoder
+from app.store import Store
 
 
-def client_loop(connection):
+def client_loop(connection: socket.socket, store: Store):
+    decoder = RESPStreamDecoder(connection)
+    encoder = RESPEncoder()
+
     while True:
         try:
-            command, *args = RESPStreamDecoder(connection).decode()
+            command, *args = decoder.decode()
 
             print(command, *args)
 
             if command == b"ping":
-                connection.send(b"+PONG\r\n")
+                connection.send(encoder.to_simple_string(b"PONG"))
+
             elif command == b"echo":
-                connection.send(b"$%d\r\n%b\r\n" % (len(args[0]), args[0]))
+                connection.send(encoder.to_bulk_string(args[0]))
+
+            elif command == b"set":
+                store.set(args[0], args[1])
+                connection.send(encoder.to_simple_string(b"OK"))
+
+            elif command == b"get":
+                payload = store.get(args[0])
+                connection.send(encoder.to_bulk_string(payload))
+
             else:
-                connection.send(b"-ERR unknown command\r\n")
+                connection.send(encoder.to_error(b"ERR unknown command"))
 
         except ConnectionError:
             break
@@ -24,10 +37,11 @@ def client_loop(connection):
 
 def main():
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
+    store = Store()
 
     while True:
         client_connection, _ = server_socket.accept() # wait for client
-        threading.Thread(target=client_loop, args=(client_connection,)).start()
+        threading.Thread(target=client_loop, args=(client_connection, store)).start()
 
 
 

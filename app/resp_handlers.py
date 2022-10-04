@@ -1,6 +1,5 @@
 class RESPStreamDecoder:
     def __init__(self, connection):
-        super()
         self.reader = RESPStreamReader(connection)
 
     def decode(self):
@@ -70,3 +69,17 @@ class RESPStreamReader:
         data, self.buffer = self.buffer.split(delimiter, maxsplit=1)
 
         return data
+
+
+class RESPEncoder:
+    def to_simple_string(self, message: bytes):
+        return b"+%b\r\n" % message
+    
+    def to_error(self, message: bytes):
+        return b"-%b\r\n" % message
+    
+    def to_bulk_string(self, message: bytes):
+        if message is None:
+            return b"-1\r\n"
+
+        return b"$%d\r\n%b\r\n" % (len(message), message)
